@@ -1,0 +1,41 @@
+import os
+import py-tesseract
+from PIL import Image
+import sapnwrfc
+
+# Function to extract text from scanned invoices using OCR
+def extract_text_from_invoice(image_path):
+    text = pytesseract.image_to_string(Image.open(image_path))
+    return text
+
+# Function to connect to SAP ERP system and create invoice entry
+def create_invoice_in_sap(invoice_data):
+    # Connect to SAP ERP system
+    conn = sapnwrfc.base.rfc_connect(
+        ashost='<SAP_Server_Address>',
+        sysnr='<SAP_System_Number>',
+        client='<SAP_Client>',
+        user='<SAP_Username>',
+        passwd='<SAP_Password>',
+        lang='<SAP_Language>'
+    )
+    
+    # Create invoice entry in SAP ERP
+    # Your code here to create invoice using SAP integration
+    
+    # Close connection
+    conn.close()
+
+# Directory containing scanned invoices
+invoices_directory = '/path/to/invoices'
+
+# Process each scanned invoice
+for filename in os.listdir(invoices_directory):
+    if filename.endswith('.jpg') or filename.endswith('.png'):
+        image_path = os.path.join(invoices_directory, filename)
+        # Extract text from scanned invoice
+        invoice_text = extract_text_from_invoice(image_path)
+        # Process extracted text to identify invoice details
+        invoice_data = process_invoice_text(invoice_text)
+        # Create invoice entry in SAP ERP
+        create_invoice_in_sap(invoice_data)
